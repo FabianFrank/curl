@@ -963,12 +963,20 @@ singleipconnect(struct connectdata *conn,
 
   *sockp = CURL_SOCKET_BAD;
 
+char addy[50];
+Curl_printable_address(ai, addy, 50);
+
+printf("connect.c :: singleipconnect\n to %s\n", addy);
+printf(" ai->ai_protocol: %d\n", ai->ai_protocol);
   res = Curl_socket(conn, ai, &addr, &sockfd);
-  if(res)
+printf("connect.c :: singleipconnect res: %d\n", res);
+  if(res) {
+    printf("connect.c :: singleipconnect : bailing out, Curl_socket failed\n");
     /* Failed to create the socket, but still return OK since we signal the
        lack of socket as well. This allows the parent function to keep looping
        over alternative addresses/socket families etc. */
     return CURLE_OK;
+  }
 
   /* store remote address and port used in this connection attempt */
   if(!getaddressinfo((struct sockaddr*)&addr.sa_addr,
@@ -1238,7 +1246,7 @@ CURLcode Curl_socket(struct connectdata *conn,
 {
   struct SessionHandle *data = conn->data;
   struct Curl_sockaddr_ex dummy;
-
+printf("connect.c :: Curl_socket START\n");
   if(!addr)
     /* if the caller doesn't want info back, use a local temp copy */
     addr = &dummy;
@@ -1250,7 +1258,7 @@ CURLcode Curl_socket(struct connectdata *conn,
    * will be used to pass / receive data to/from the fopensocket callback
    * if this has been set, before that, it is initialized from parameters.
    */
-
+printf("ai->ai_protocol: %d\n", ai->ai_protocol);
   addr->family = ai->ai_family;
   addr->socktype = conn->socktype;
   addr->protocol = conn->socktype==SOCK_DGRAM?IPPROTO_UDP:ai->ai_protocol;
@@ -1273,9 +1281,15 @@ CURLcode Curl_socket(struct connectdata *conn,
     *sockfd = data->set.fopensocket(data->set.opensocket_client,
                                     CURLSOCKTYPE_IPCXN,
                                     (struct curl_sockaddr *)addr);
-  else
+  else {
     /* opensocket callback not set, so simply create the socket now */
+    printf("BEFORE SOCKET\n");
+    printf("FAMILY: %d\n", addr->family);
+    printf("SOCKTYPE: %d\n", addr->socktype);
+    printf("PROTOCOL: %d\n", addr->protocol);
     *sockfd = socket(addr->family, addr->socktype, addr->protocol);
+    printf("AFTER SOCKET\n");
+  }
 
   if(*sockfd == CURL_SOCKET_BAD)
     /* no socket, no connection */

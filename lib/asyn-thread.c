@@ -294,7 +294,9 @@ static unsigned int CURL_STDCALL gethostbyname_thread (void *arg)
 {
   struct thread_sync_data *tsd = (struct thread_sync_data *)arg;
 
+printf("gethostbyname_thread :: before resolve\n");
   tsd->res = Curl_ipv4_resolve_r(tsd->hostname, tsd->port);
+printf("gethostbyname_thread :: after resolve\n");
 
   if(!tsd->res) {
     tsd->sock_error = SOCKERRNO;

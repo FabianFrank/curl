@@ -176,6 +176,8 @@ Curl_addrinfo *Curl_getaddrinfo(struct connectdata *conn,
 
   *waitp = 0; /* synchronous response only */
 
+printf("hostip6.c :: Curl_getaddrinfo\n");
+
   /*
    * Check if a limited name resolve has been requested.
    */

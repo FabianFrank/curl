@@ -412,6 +412,8 @@ int Curl_resolv(struct connectdata *conn,
 
   *entry = NULL;
 
+printf("Curl_resolv :: START\n");
+
   /* Create an entry id, based upon the hostname and port */
   entry_id = create_hostcache_id(hostname, port);
   /* If we can't create the entry id, fail */
@@ -459,6 +461,7 @@ int Curl_resolv(struct connectdata *conn,
     /* If Curl_getaddrinfo() returns NULL, 'respwait' might be set to a
        non-zero value indicating that we need to wait for the response to the
        resolve call */
+printf("Curl_resolv :: BEFORE Curl_getaddrinfo\n");
     addr = Curl_getaddrinfo(conn,
 #ifdef DEBUGBUILD
                             (data->set.str[STRING_DEVICE]
@@ -466,6 +469,8 @@ int Curl_resolv(struct connectdata *conn,
                                         "LocalHost"))?"localhost":
 #endif
                             hostname, port, &respwait);
+
+printf("Curl_resolv :: AFTER Curl_getaddrinfo\n");
 
     if(!addr) {
       if(respwait) {

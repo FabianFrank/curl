@@ -102,6 +102,8 @@ Curl_addrinfo *Curl_getaddrinfo(struct connectdata *conn,
   (void)conn;
 #endif
 
+printf("Curl_getaddrinfo :: BEGIN\n");
+
   *waitp = 0; /* synchronous response only */
 
   ai = Curl_ipv4_resolve_r(hostname, port);

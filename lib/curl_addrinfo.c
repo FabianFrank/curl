@@ -125,6 +125,8 @@ Curl_getaddrinfo_ex(const char *nodename,
 
   *result = NULL; /* assume failure */
 
+printf("curl_addrinfo.c :: Curl_getaddrinfo_ex :: START\n");
+
   error = getaddrinfo(nodename, servname, hints, &aihead);
   if(error)
     return error;
@@ -168,6 +170,10 @@ Curl_getaddrinfo_ex(const char *nodename,
     ca->ai_addr      = NULL;
     ca->ai_canonname = NULL;
     ca->ai_next      = NULL;
+
+printf(" GETADDRINFO ENTRY BEGIN\n");
+printf(" ca->ai_protocol: %d\n", ca->ai_protocol);
+printf(" GETADDRINFO ENTRY END\n\n");
 
     if((ca->ai_addr = malloc(ss_size)) == NULL) {
       error = EAI_MEMORY;
@@ -513,7 +519,9 @@ curl_dogetaddrinfo(const char *hostname,
                    struct addrinfo **result,
                    int line, const char *source)
 {
+printf("curl_addrinfo.c :: curl_dogetaddrinfo : START\n");
   int res=(getaddrinfo)(hostname, service, hints, result);
+printf("curl_addrinfo.c :: curl_dogetaddrinfo : RES: %d\n", res);
   if(0 == res)
     /* success */
     curl_memlog("ADDR %s:%d getaddrinfo() = %p\n",
